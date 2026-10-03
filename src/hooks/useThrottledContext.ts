@@ -2,7 +2,7 @@ import { Context, useCallback, useContext, useEffect, useRef, useState } from 'r
 import { ThrottledContext } from '../contexts';
 
 type NullableFunction = (() => void) | null;
-// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 const EMPTY_FUNCTION = () => {};
 
 export function useThrottledContext<T>(context: Context<T>): [T, T | null, () => void] {
@@ -14,18 +14,20 @@ export function useThrottledContext<T>(context: Context<T>): [T, T | null, () =>
   const updateCallback = useRef<NullableFunction>(null);
   const [throttledValue, setThrottledValue] = useState<T>(value);
 
-  if (!enabled) {
-    const returnPrev = prevValue.current;
-    prevValue.current = value;
-    return [value, returnPrev, EMPTY_FUNCTION];
-  }
+  const latestThrottledValue = useRef(throttledValue);
+  latestThrottledValue.current = throttledValue;
 
   useEffect(() => {
+    if (!enabled) {
+      updateCallback.current = null;
+      setThrottledValue(value);
+      return;
+    }
     const timeDiff = Date.now() - updated.current;
     const throttleDelay = interval - timeDiff;
     const initialDelay = throttleDelay <= 0 ? firstActionDelay : 0;
     const delay = Math.max(initialDelay, throttleDelay);
-    prevValue.current = throttledValue;
+    prevValue.current = latestThrottledValue.current;
 
     if (delay <= 0) {
       updated.current = Date.now();
@@ -41,7 +43,7 @@ export function useThrottledContext<T>(context: Context<T>): [T, T | null, () =>
     }
 
     return () => clearTimeout(updateTimer.current);
-  }, [value]);
+  }, [value, enabled, interval, firstActionDelay]);
 
   const onTransitionEnd = useCallback(() => {
     updated.current = 0;
@@ -52,6 +54,11 @@ export function useThrottledContext<T>(context: Context<T>): [T, T | null, () =>
     return () => clearTimeout(updateTimer.current);
   }, []);
 
+  if (!enabled) {
+    const returnPrev = prevValue.current;
+    prevValue.current = value;
+    return [value, returnPrev, EMPTY_FUNCTION];
+  }
   const returnPrev = prevValue.current;
   return [throttledValue, returnPrev, onTransitionEnd];
 }

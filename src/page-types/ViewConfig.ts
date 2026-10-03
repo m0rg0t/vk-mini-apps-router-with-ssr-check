@@ -11,7 +11,7 @@ interface ViewRoutePartial extends CommonRouteObject {
 export class ViewConfig<T extends string> implements HasId<T>, HasChildren<AnyPanel>, RepresentsRoutes<ViewRoutePartial> {
   constructor(public id: T, private panels: AnyPanel[]) {
     panels.forEach((panel) => {
-      // @ts-expect-error
+      // @ts-expect-error Dynamic route builder preserves literal keys in the public generic result.
       this[uniqueKey(this, panel.id)] = panel;
     });
   }

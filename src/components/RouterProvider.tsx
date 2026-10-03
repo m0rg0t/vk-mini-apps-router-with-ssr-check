@@ -106,9 +106,9 @@ export function RouterProvider({
     setTransactionExecutor(executor);
     const searchParams = createSearchParams(router.state.location.search);
     const enableFilling = Boolean(searchParams.get(SEARCH_PARAM_INFLATE));
-    hierarchy &&
-      enableFilling &&
+    if (hierarchy && enableFilling) {
       fillHistory(hierarchy, dataRouterContext.routeNavigator, routeContext, executor);
+    }
   }, [router]);
 
   const routeNotFound = Boolean(
@@ -130,7 +130,7 @@ export function RouterProvider({
         <PopoutContext.Provider value={dataPopoutContext}>
           {routeNotFound &&
             (notFound || <DefaultNotFound routeNavigator={dataRouterContext.routeNavigator} />)}
-          {!routeNotFound && <RouteContext.Provider value={routeContext} children={children} />}
+          {!routeNotFound && <RouteContext.Provider value={routeContext}>{children}</RouteContext.Provider>}
         </PopoutContext.Provider>
       </ThrottledContext.Provider>
     </RouterContext.Provider>

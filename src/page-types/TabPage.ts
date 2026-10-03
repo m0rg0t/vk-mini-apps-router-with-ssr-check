@@ -10,7 +10,7 @@ interface TabRoutePartial extends CommonRouteObject {
 abstract class BaseTabPage<I extends string> implements RepresentsRoutes<TabRoutePartial>, HasId<I> {
   protected constructor(public id: I, public path: string, protected modals: AnyModalPage[]) {
     modals.forEach((modal) => {
-      // @ts-expect-error
+      // @ts-expect-error Dynamic route builder preserves literal keys in the public generic result.
       this[uniqueKey(this, modal.id)] = modal;
     });
   }
@@ -28,14 +28,14 @@ abstract class BaseTabPage<I extends string> implements RepresentsRoutes<TabRout
 }
 
 export class TabPage<I extends string> extends BaseTabPage<I> implements Page, HasId<I> {
-  hasParams: false = false;
+  hasParams = false as const;
   constructor(id: I, public path: string, modals: AnyModalPage[] = []) {
     super(id, path, modals);
   }
 }
 
 export class TabPageWithParams<I extends string, T extends string> extends BaseTabPage<I> implements PageWithParams<T>, HasId<I> {
-  hasParams: true = true;
+  hasParams = true as const;
   constructor(public id: I, public path: string, public paramKeys: readonly T[], modals: AnyModalPage[] = []) {
     super(id, path, modals);
   }

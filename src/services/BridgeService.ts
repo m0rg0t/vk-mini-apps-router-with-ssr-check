@@ -6,7 +6,7 @@ export class BridgeService {
 
   private static _instance: BridgeService | undefined;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   private constructor() {}
 
   static enableNativeSwipeBack(): string {

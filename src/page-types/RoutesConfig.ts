@@ -14,7 +14,7 @@ interface RoutePartial extends CommonRouteObject {
 export class RoutesConfig implements RepresentsRoutes<RoutePartial> {
   private items: ViewConfig<string>[] | RootConfig<string>[] = [];
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   private constructor() {}
 
   getRoutes(): RoutePartial[] {
@@ -50,7 +50,7 @@ export class RoutesConfig implements RepresentsRoutes<RoutePartial> {
     const config = new RoutesConfig();
     config.items = routes;
     routes.forEach((route) => {
-      // @ts-expect-error
+      // @ts-expect-error Dynamic route builder preserves literal keys in the public generic result.
       config[uniqueKey(config, route.id)] = route;
     });
     return config;

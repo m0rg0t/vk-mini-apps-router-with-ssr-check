@@ -15,7 +15,7 @@ export class RootConfig<T extends string> implements HasId<T>, HasChildren<ViewC
       throw new Error(`Trying to create root ${id} without views. Root must have at least one view.`);
     }
     views.forEach((views) => {
-      // @ts-expect-error
+      // @ts-expect-error Dynamic route builder preserves literal keys in the public generic result.
       this[uniqueKey(this, views.id)] = views;
     });
   }
