@@ -1,5 +1,6 @@
 export const getHrefWithoutHash = () => {
-  let url = window.location.href;
-  let hashIndex = url.indexOf('#');
+  if (typeof window === 'undefined') return '';
+  const url = window.location.href;
+  const hashIndex = url.indexOf('#');
   return hashIndex === -1 ? url : url.slice(0, hashIndex);
 };

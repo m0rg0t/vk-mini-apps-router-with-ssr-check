@@ -1,26 +1,10 @@
-import { AgnosticRouteMatch, Location, Params, RouterState } from '@remix-run/router';
+import { AgnosticRouteMatch, Location, RouterState } from '@remix-run/router';
 import { RouteContextObject } from '../contexts';
 import { PageInternal } from '../type';
 import { STATE_KEY_SHOW_MODAL, STATE_KEY_SHOW_POPOUT } from '../const';
 import { useState } from 'react';
 
-export function getParamKeys(path: string | undefined): string[] {
-  return path
-    ?.match(/\/:[^\/]+/g)
-    ?.map((param) => param.replace('/', '')) ?? [];
-}
-
-export function fillParamsIntoPath(path: string, params: Params): string {
-  const parameters = getParamKeys(path);
-  const paramInjector = (acc: string, param: string): string => {
-    const paramName = param.replace(':', '');
-    if (!params[paramName]) {
-      throw new Error(`Missing parameter ${paramName} while building route ${path}`);
-    }
-    return acc.replace(param, params[paramName] as string);
-  };
-  return parameters.reduce(paramInjector, path);
-}
+export { getParamKeys, fillParamsIntoPath } from './pathParams';
 
 export function getRouteContext(state: RouterState, panelsHistory: string[] = []): RouteContextObject {
   return {

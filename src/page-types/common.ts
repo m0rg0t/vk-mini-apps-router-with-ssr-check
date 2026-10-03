@@ -37,9 +37,9 @@ type UniqueKey<Obj extends {}, K extends string> = '' extends K ? K :
 
 export function uniqueKey<Obj extends {}, K extends string>(target: Obj, key: K): UniqueKey<Obj, K> {
   if (key && key.length && typeof target === 'object') {
-    if (target.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(target, key)) {
       const extendedKey = `${key}_0`;
-      return (target.hasOwnProperty(extendedKey) ? uniqueKey(target, extendedKey) : extendedKey) as UniqueKey<Obj, K>;
+      return (Object.prototype.hasOwnProperty.call(target, extendedKey) ? uniqueKey(target, extendedKey) : extendedKey) as UniqueKey<Obj, K>;
     }
   }
   return key as UniqueKey<Obj, K>;

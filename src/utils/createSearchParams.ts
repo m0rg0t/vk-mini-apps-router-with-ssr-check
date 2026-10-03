@@ -52,7 +52,7 @@ export function getSearchParamsForLocation(
   const searchParams = createSearchParams(locationSearch);
 
   if (defaultSearchParams) {
-    for (let key of defaultSearchParams.keys()) {
+    for (const key of defaultSearchParams.keys()) {
       if (!searchParams.has(key)) {
         defaultSearchParams.getAll(key).forEach((value) => {
           searchParams.append(key, value);

@@ -13,7 +13,7 @@ import { getHistoryState } from './getHistoryState';
 
 const PopStateEventType = 'popstate';
 
-/* eslint-disable @typescript-eslint/no-use-before-define */
+
 export function getUrlBasedHistory(
   getLocation: (window: Window, globalHistory: Window['history']) => Location,
   createHref: (window: Window, to: To) => string,
@@ -29,7 +29,7 @@ export function getUrlBasedHistory(
   // Index should only be null when we initialize. If not, it's because the
   // user called history.pushState or history.replaceState directly, in which
   // case we should log a warning as it will result in bugs.
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
   if (index == null) {
     index = 0;
     globalHistory.replaceState({ ...globalHistory.state, idx: index }, '');
@@ -43,7 +43,7 @@ export function getUrlBasedHistory(
   function handlePop() {
     action = Action.Pop;
     const nextIndex = getIndex();
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
     const delta = nextIndex == null ? null : nextIndex - index;
     index = nextIndex;
     if (listener) {

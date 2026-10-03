@@ -6,7 +6,7 @@ interface ModalRoutePartial extends CommonRouteObject {
 }
 
 export class ModalPage<I extends string> implements Page, RepresentsRoutes<ModalRoutePartial>, HasId<I> {
-  hasParams: false = false;
+  hasParams = false as const;
   constructor(public id: I, public path: string) {}
 
   getRoutes(): ModalRoutePartial[] {
@@ -18,7 +18,7 @@ export class ModalPage<I extends string> implements Page, RepresentsRoutes<Modal
 }
 
 export class ModalPageWithParams<I extends string, T extends string> implements PageWithParams<T>, RepresentsRoutes<ModalRoutePartial>, HasId<I> {
-  hasParams: true = true;
+  hasParams = true as const;
   constructor(public id: I, public path: string, public paramKeys: readonly T[]) {}
 
   getRoutes(): ModalRoutePartial[] {

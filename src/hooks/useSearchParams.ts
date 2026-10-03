@@ -37,11 +37,11 @@ export function useSearchParams(
     'user.'
   );
 
-  let defaultSearchParamsRef = useRef(createSearchParams(defaultInit));
-  let hasSetSearchParamsRef = useRef(false);
+  const defaultSearchParamsRef = useRef(createSearchParams(defaultInit));
+  const hasSetSearchParamsRef = useRef(false);
 
-  let location = useLocation();
-  let searchParams = useMemo(
+  const location = useLocation();
+  const searchParams = useMemo(
     () =>
       // Only merge in the defaults if we haven't yet called setSearchParams.
       // Once we call that we want those to take precedence, otherwise you can't
@@ -53,8 +53,8 @@ export function useSearchParams(
     [location.search]
   );
 
-  let router = useContext(RouterContext).router;
-  let setSearchParams = useCallback<SetURLSearchParams>(
+  const router = useContext(RouterContext).router;
+  const setSearchParams = useCallback<SetURLSearchParams>(
     (nextInit, navigateOptions) => {
       const newSearchParams = createSearchParams(
         typeof nextInit === 'function' ? nextInit(searchParams) : nextInit

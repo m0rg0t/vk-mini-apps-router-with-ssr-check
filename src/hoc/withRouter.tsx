@@ -53,7 +53,7 @@ export function withRouter<T extends RouterProps>(Component: ComponentType<T>): 
       searchParams,
       setSearchParams,
     };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
     const propsWithRouter: T = {
       ...props,
       ...routerProps,

@@ -1,5 +1,8 @@
-// @ts-expect-error
 import { Link } from '@vkontakte/vkui';
+import { useLocation } from '../hooks/hooks';
+import { useResolvedPath } from '../hooks/useResolvedPath';
+import { RouteContext } from '../contexts';
+import { useContext } from 'react';
 import { useHref } from '../hooks/useHref';
 import { RelativeRoutingType, To } from '@remix-run/router';
 import {
@@ -48,7 +51,7 @@ const isBrowser =
   typeof window.document.createElement !== 'undefined';
 
 export const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
-  function(
+  function RouterLinkComponent(
     {
       to,
       relative,
@@ -56,6 +59,11 @@ export const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
       target,
       reloadDocument,
       onClick,
+      children,
+      className,
+      style,
+      caseSensitive = false,
+      end = false,
       ...rest
     }: RouterLinkProps,
     ref,
@@ -84,8 +92,19 @@ export const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
         }
       }
     }
-    
+
     const href = useHref(to, { relative });
+    const resolved = useResolvedPath(to, { relative });
+    const location = useLocation();
+    const route = useContext(RouteContext);
+    const normalize = (path: string) => caseSensitive ? path : path.toLowerCase();
+    const targetPath = normalize(resolved.pathname);
+    const matches = (path?: string) => {
+      if (!path || isExternal) return false;
+      const current = normalize(path);
+      return current === targetPath || (!end && targetPath !== '/' && current.startsWith(targetPath.replace(/\/$/, '') + '/'));
+    };
+    const renderState = { isActive: matches(location.pathname), isPending: matches(route.state.navigation.location?.pathname) };
 
     const internalOnClick = useLinkClickHandler(to, {
       replace,
@@ -106,10 +125,12 @@ export const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
       <Link
         {...rest}
         href={absoluteHref || href}
+        className={typeof className === 'function' ? className(renderState) : className}
+        style={typeof style === 'function' ? style(renderState) : style}
         onClick={isExternal || reloadDocument ? onClick : handleClick}
-        ref={ref}
+        getRootRef={ref}
         target={target}
-      ></Link>
+      >{typeof children === 'function' ? children(renderState) : children}</Link>
     );
   }
 );
